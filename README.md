@@ -12,12 +12,12 @@ Once installed, simple make a locustfile.py as per usual, but instead of inherit
 These locusts expose a self.client object, that is actually a selenium.webdriver, it will understand all the usual methods. The client also exposes a self.client.waitUntil method, that is similar to selenium's WebDriverWait, with the differences that these waits, their timing and success/failure are logged to locust.
 
 An example locust scenario that uses real browser could be
-
+ 
+```python
 from realbrowserlocusts import FirefoxLocust, ChromeLocust, PhantomJSLocust
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
-```python
 from locust import TaskSet, task
 
 
