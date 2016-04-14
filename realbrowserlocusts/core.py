@@ -36,6 +36,7 @@ def wrapForLocust(request_type, name, func, *args, **kwargs):
         events.request_success.fire(request_type=request_type, name=name, response_time=total_time, response_length=0)
         return result
 
+
 class FirefoxLocustDriver(webdriver.Firefox):
 
     def get(self, url):
@@ -50,3 +51,17 @@ class ChromeLocustDriver(webdriver.Chrome):
 
     def get(self, url):
         return wrapForLocust("GET", url, super(ChromeLocustDriver, self).get, url)
+
+class RealBrowserClient(object):
+
+    def __init__(self, driver, wait_time_to_finish, screen_width, screen_height):
+        self.driver = driver
+        self.driver.set_window_size(screen_width, screen_height)
+        self.wait = WebDriverWait(self.driver, wait_time_to_finish)
+
+    def waitUntil(self, method, message=""):
+        return wrapForLocust("Wait for", message, self.wait.until, method, message)
+
+    def __getattr__(self, attr):
+        """Forward all messages this client doesn't understand to it's webdriver"""
+        return getattr(self.driver, attr)

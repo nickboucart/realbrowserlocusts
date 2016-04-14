@@ -1,5 +1,3 @@
-from firefox_locust import FirefoxLocust
-from phantomjs_locust import PhantomJSLocust
-from chrome_locust import ChromeLocust
+from locusts import FirefoxLocust, PhantomJSLocust, ChromeLocust
 
-version = "0.1"
+version = "0.2"
