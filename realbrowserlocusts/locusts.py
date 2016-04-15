@@ -1,6 +1,7 @@
 from locust import Locust
 from locust.exception import LocustError
-from core import RealBrowserClient, ChromeLocustDriver, FirefoxLocustDriver, PhantomJSLocustDriver
+from selenium import webdriver
+from core import RealBrowserClient
 
 class RealBrowserLocust(Locust):
     client = None
@@ -21,7 +22,7 @@ class ChromeLocust(RealBrowserLocust):
     """
     def __init__(self):
         super(ChromeLocust, self).__init__()
-        self.client = RealBrowserClient(ChromeLocustDriver(), self.timeout, self.screen_width, self.screen_height)
+        self.client = RealBrowserClient(webdriver.Chrome(), self.timeout, self.screen_width, self.screen_height)
 
 class FirefoxLocust(RealBrowserLocust):
     """
@@ -29,7 +30,7 @@ class FirefoxLocust(RealBrowserLocust):
     """
     def __init__(self):
         super(FirefoxLocust, self).__init__()
-        self.client = RealBrowserClient(FirefoxLocustDriver(), self.timeout, self.screen_width, self.screen_height)
+        self.client = RealBrowserClient(webdriver.Firefox(), self.timeout, self.screen_width, self.screen_height)
 
 class PhantomJSLocust(RealBrowserLocust):
     """
@@ -37,4 +38,4 @@ class PhantomJSLocust(RealBrowserLocust):
     """
     def __init__(self):
         super(PhantomJSLocust, self).__init__()
-        self.client = RealBrowserClient(PhantomJSLocustDriver(), self.timeout, self.screen_width, self.screen_height)
+        self.client = RealBrowserClient(webdriver.PhantomJS(), self.timeout, self.screen_width, self.screen_height)
