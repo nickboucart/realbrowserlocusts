@@ -1,3 +1,11 @@
-from locusts import FirefoxLocust, PhantomJSLocust, ChromeLocust
+# pylint:disable=undefined-all-variable
+from realbrowserlocusts.locusts import FirefoxLocust, PhantomJSLocust, \
+    ChromeLocust
+""" Expose RealBrowserLocust subclasses at package level """
+__all__ = [
+    'FirefoxLocust',
+    'PhantomJSLocust',
+    'ChromeLocust'
+]
 
-version = "0.2"
+__version__ = "0.2"
