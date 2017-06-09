@@ -1,9 +1,12 @@
 # pylint:disable=too-few-public-methods
 """ Combine Locust with Selenium Web Driver """
+import logging
 from locust import Locust
 from locust.exception import LocustError
 from selenium import webdriver
 from realbrowserlocusts.core import RealBrowserClient
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class RealBrowserLocust(Locust):
@@ -33,6 +36,27 @@ class ChromeLocust(RealBrowserLocust):
         super(ChromeLocust, self).__init__()
         self.client = RealBrowserClient(
             webdriver.Chrome(),
+            self.timeout,
+            self.screen_width,
+            self.screen_height
+        )
+
+
+class HeadlessChromeLocust(RealBrowserLocust):
+    """
+    Provides a headless Chrome webdriver that logs GET's and waits to locust
+    """
+    def __init__(self):
+        super(HeadlessChromeLocust, self).__init__()
+        options = webdriver.ChromeOptions()
+        options.add_argument('headless')
+        options.add_argument('window-size={}x{}'.format(
+            self.screen_width, self.screen_height
+        ))
+        driver = webdriver.Chrome(chrome_options=options)
+        _LOGGER.info('Actually trying to run headless Chrome')
+        self.client = RealBrowserClient(
+            driver,
             self.timeout,
             self.screen_width,
             self.screen_height

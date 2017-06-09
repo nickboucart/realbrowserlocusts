@@ -1,4 +1,4 @@
-from realbrowserlocusts import FirefoxLocust
+from realbrowserlocusts import HeadlessChromeLocust
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -38,7 +38,7 @@ class LocustUserBehavior(TaskSet):
         )
 
 
-class LocustUser(FirefoxLocust):
+class LocustUser(HeadlessChromeLocust):
 
     host = "not really used"
     timeout = 30  # in seconds in waitUntil thingies
