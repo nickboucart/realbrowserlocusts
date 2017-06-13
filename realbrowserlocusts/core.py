@@ -45,9 +45,10 @@ class RealBrowserClient(object):
     """
 
     def __init__(self, driver, wait_time_to_finish, screen_width,
-                 screen_height):
+                 screen_height, set_window=True):
         self.driver = driver
-        self.driver.set_window_size(screen_width, screen_height)
+        if set_window:
+            self.driver.set_window_size(screen_width, screen_height)
         self.wait = WebDriverWait(self.driver, wait_time_to_finish)
 
     @staticmethod
