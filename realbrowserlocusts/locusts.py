@@ -53,6 +53,7 @@ class HeadlessChromeLocust(RealBrowserLocust):
         options.add_argument('window-size={}x{}'.format(
             self.screen_width, self.screen_height
         ))
+        options.add_argument('disable-gpu')
         driver = webdriver.Chrome(chrome_options=options)
         _LOGGER.info('Actually trying to run headless Chrome')
         self.client = RealBrowserClient(
