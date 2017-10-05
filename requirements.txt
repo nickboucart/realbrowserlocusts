@@ -1,0 +1,5 @@
+locustio==0.8a2
+selenium==3.4.1
+flake8==3.3.0
+pylint==1.7.1
+sphinx==1.6.1

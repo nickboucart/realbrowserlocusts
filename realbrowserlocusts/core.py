@@ -1,34 +1,63 @@
+# pylint:disable=too-few-public-methods
+""" Core Selenium wrapping functionality """
 import time
-from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-
-from locust import Locust, events
+from locust import events
 from locust.exception import StopLocust
 
 
-def wrapForLocust(request_type, name, func, *args, **kwargs):
+def wrap_for_locust(request_type, name, func, *args, **kwargs):
+    """
+    Wrap Selenium activity function with Locust's event fail/success
+    method
+
+    :param request_type: the type of request
+    :param name: name to be reported to events.request_*.fire
+    :param func: callable to be timed and logged
+    :return result: Result of the provided function if doesn't raise exception
+    """
     try:
         start_time = time.time()
         result = func(*args, **kwargs)
-    except Exception as e:
+    except Exception as event_exception:
         total_time = int((time.time() - start_time) * 1000)
-        events.request_failure.fire(request_type=request_type, name=name, response_time=total_time, exception=e)
+        events.request_failure.fire(
+            request_type=request_type,
+            name=name,
+            response_time=total_time,
+            exception=event_exception
+        )
         raise StopLocust()
     else:
         total_time = int((time.time() - start_time) * 1000)
-        events.request_success.fire(request_type=request_type, name=name, response_time=total_time, response_length=0)
+        events.request_success.fire(
+            request_type=request_type,
+            name=name,
+            response_time=total_time,
+            response_length=0
+        )
         return result
 
-class RealBrowserClient(object):
 
-    def __init__(self, driver, wait_time_to_finish, screen_width, screen_height):
+class RealBrowserClient(object):
+    """
+    Web Driver client with Locust functionality
+    """
+
+    def __init__(self, driver, wait_time_to_finish, screen_width,
+                 screen_height, set_window=True):
         self.driver = driver
-        self.driver.set_window_size(screen_width, screen_height)
+        if set_window:
+            self.driver.set_window_size(screen_width, screen_height)
         self.wait = WebDriverWait(self.driver, wait_time_to_finish)
 
-    def timed_event_for_locust(self, request_type, message, func, *args, **kwargs):
+    @staticmethod
+    def timed_event_for_locust(request_type, message, func, *args, **kwargs):
         """
-        Use this method whenever you have a logical sequence of browser steps that you would like to time. Group these in a seperate, not @task method and call them using this method. These will show up in the locust web interface with timings
+        Use this method whenever you have a logical sequence of browser steps
+        that you would like to time. Group these in a seperate, not @task
+        method and call them using this method. These will show up in the
+        locust web interface with timings
 
         Args:
             request_type (str): the type of request
@@ -38,13 +67,18 @@ class RealBrowserClient(object):
             **kwargs: Arbitrary keyword args used for calling func
 
         Returns:
-            func(*args, **kwargs) if this function invocation does not raise an exception
+            func(*args, **kwargs) if this function invocation does not raise
+            an exception
 
         Raises:
-            StopLocust: whenever func raises an exception, this exception is catched, logged to locust as a failure and a StopLocust exception is raised.
+            StopLocust: whenever func raises an exception, this exception is
+            catched, logged to locust as a failure and a StopLocust exception
+            is raised.
         """
-        return wrapForLocust(request_type, message, func, *args, **kwargs)
+        return wrap_for_locust(request_type, message, func, *args, **kwargs)
 
     def __getattr__(self, attr):
-        """Forward all messages this client doesn't understand to it's webdriver"""
+        """
+        Forward all messages this client doesn't understand to it's webdriver
+        """
         return getattr(self.driver, attr)
