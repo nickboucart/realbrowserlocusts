@@ -1,6 +1,7 @@
 # pylint:disable=too-few-public-methods
 """ Combine Locust with Selenium Web Driver """
 import logging
+from os import getenv as os_getenv
 from locust import Locust
 from locust.exception import LocustError
 from selenium import webdriver
@@ -11,8 +12,8 @@ _LOGGER = logging.getLogger(__name__)
 
 class RealBrowserLocust(Locust):
     """
-   This is the abstract Locust class which should be subclassed.
-   """
+    This is the abstract Locust class which should be subclassed.
+    """
     client = None
     timeout = 30
     screen_width = None
@@ -26,6 +27,7 @@ class RealBrowserLocust(Locust):
         if self.screen_height is None:
             raise LocustError("You must specify a screen_height "
                               "for the browser")
+        self.proxy_server = os_getenv("LOCUST_BROWSER_PROXY", None)
 
 
 class ChromeLocust(RealBrowserLocust):
@@ -34,8 +36,12 @@ class ChromeLocust(RealBrowserLocust):
     """
     def __init__(self):
         super(ChromeLocust, self).__init__()
+        options = webdriver.ChromeOptions()
+        if self.proxy_server:
+            _LOGGER.info('Using proxy: ' + self.proxy_server)
+            options.add_argument('proxy-server={}'.format(self.proxy_server))
         self.client = RealBrowserClient(
-            webdriver.Chrome(),
+            webdriver.Chrome(chrome_options=options),
             self.timeout,
             self.screen_width,
             self.screen_height
@@ -54,6 +60,9 @@ class HeadlessChromeLocust(RealBrowserLocust):
             self.screen_width, self.screen_height
         ))
         options.add_argument('disable-gpu')
+        if self.proxy_server:
+            _LOGGER.info('Using proxy: ' + self.proxy_server)
+            options.add_argument('proxy-server={}'.format(self.proxy_server))
         driver = webdriver.Chrome(chrome_options=options)
         _LOGGER.info('Actually trying to run headless Chrome')
         self.client = RealBrowserClient(

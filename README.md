@@ -7,7 +7,7 @@ Installation via pip
 
     pip install realbrowserlocusts
 
-Once installed, simple make a locustfile.py as per usual, but instead of inheriting your locust from HttpLocust, instantiate a FirefoxLocust, ChromeLocust or PhantomJSLocust as you which.
+Once installed, simple make a locustfile.py as per usual, but instead of inheriting your locust from HttpLocust, instantiate a FirefoxLocust, ChromeLocust, HeadlessChromeLocust or PhantomJSLocust as you which.
 
 These locusts expose a self.client object, that is actually a selenium.webdriver, it will understand all the usual methods. The client also exposes a self.client.wait object, that is a selenium's WebDriverWait. A last method that is exposed by the client is the self.client.timed_event_for_locust method, that can be used to group a number of browser actions togehter, and time them in locust.
 
@@ -50,3 +50,13 @@ class LocustUser(FirefoxLocust):
     screen_height = 600
     task_set = LocustUserBehavior
 ```
+
+### Using proxy with Chrome browser
+
+To use proxy server while testing with Chrome browser, use LOCUST_BROWSER_PROXY environment variable, for example:
+
+```
+export LOCUST_BROWSER_PROXY=socks5://localhost:8899
+```
+
+It can be helpful especially while tests development.
