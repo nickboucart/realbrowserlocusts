@@ -56,6 +56,8 @@ class HeadlessChromeLocust(RealBrowserLocust):
         super(HeadlessChromeLocust, self).__init__()
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
         options.add_argument('window-size={}x{}'.format(
             self.screen_width, self.screen_height
         ))
