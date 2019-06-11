@@ -15,7 +15,6 @@ class RealBrowserLocust(Locust):
     This is the abstract Locust class which should be subclassed.
     """
     client = None
-    stop_timeout = 120
     timeout = 30
     screen_width = None
     screen_height = None
@@ -70,7 +69,6 @@ class HeadlessChromeLocust(RealBrowserLocust):
         _LOGGER.info('Actually trying to run headless Chrome')
         self.client = RealBrowserClient(
             driver,
-            self.stop_timeout,
             self.timeout,
             self.screen_width,
             self.screen_height,

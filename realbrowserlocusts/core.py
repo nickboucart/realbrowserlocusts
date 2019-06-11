@@ -29,7 +29,6 @@ def wrap_for_locust(request_type, name, func, *args, **kwargs):
             exception=event_exception
         )
         raise StopLocust()
-        runners.locust_runner.quit()
     else:
         total_time = int((time.time() - start_time) * 1000)
         events.request_success.fire(
@@ -39,7 +38,6 @@ def wrap_for_locust(request_type, name, func, *args, **kwargs):
             response_length=0
         )
         return result
-        runners.locust_runner.quit()
 
 
 class RealBrowserClient(object):
