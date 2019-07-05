@@ -34,6 +34,29 @@ class ChromeLocust(RealBrowserLocust):
     """
     Provides a Chrome webdriver that logs GET's and waits to locust
     """
+
+    timeout =  15 #in seconds in waitUntil thingies
+    stop_timeout = 120
+    min_wait = 1000
+    max_wait = 2000
+    screen_width = 1200
+    screen_height = 800
+
+    def teardown(self):
+        try:
+            gevent.sleep(5)  # let reports complete its job
+            from locust.web import logger
+            logger.warn('Shutting down all')
+            runners.locust_runner.stop()
+            runners.locust_runner.quit()
+        finally:
+            import gc
+            from locust.web import logger
+            logger.warn('Shutting down all')
+            gevent.sleep(5)
+            gevent.killall([obj for obj in gc.get_objects() if isinstance(obj, gevent.Greenlet)])
+            os._exit(0)
+
     def __init__(self):
         super(ChromeLocust, self).__init__()
         options = webdriver.ChromeOptions()
@@ -52,6 +75,29 @@ class HeadlessChromeLocust(RealBrowserLocust):
     """
     Provides a headless Chrome webdriver that logs GET's and waits to locust
     """
+
+    timeout =  15 #in seconds in waitUntil thingies
+    stop_timeout = 120
+    min_wait = 1000
+    max_wait = 2000
+    screen_width = 1200
+    screen_height = 800
+
+    def teardown(self):
+        try:
+            gevent.sleep(5)  # let reports complete its job
+            from locust.web import logger
+            logger.warn('Shutting down all')
+            runners.locust_runner.stop()
+            runners.locust_runner.quit()
+        finally:
+            import gc
+            from locust.web import logger
+            logger.warn('Shutting down all')
+            gevent.sleep(5)
+            gevent.killall([obj for obj in gc.get_objects() if isinstance(obj, gevent.Greenlet)])
+            os._exit(0)
+
     def __init__(self):
         super(HeadlessChromeLocust, self).__init__()
         options = webdriver.ChromeOptions()
@@ -80,6 +126,29 @@ class FirefoxLocust(RealBrowserLocust):
     """
     Provides a Firefox webdriver that logs GET's and waits to locust
     """
+
+    timeout =  15 #in seconds in waitUntil thingies
+    stop_timeout = 120
+    min_wait = 1000
+    max_wait = 2000
+    screen_width = 1200
+    screen_height = 800
+
+    def teardown(self):
+        try:
+            gevent.sleep(5)  # let reports complete its job
+            from locust.web import logger
+            logger.warn('Shutting down all')
+            runners.locust_runner.stop()
+            runners.locust_runner.quit()
+        finally:
+            import gc
+            from locust.web import logger
+            logger.warn('Shutting down all')
+            gevent.sleep(5)
+            gevent.killall([obj for obj in gc.get_objects() if isinstance(obj, gevent.Greenlet)])
+            os._exit(0)
+
     def __init__(self):
         super(FirefoxLocust, self).__init__()
         self.client = RealBrowserClient(
