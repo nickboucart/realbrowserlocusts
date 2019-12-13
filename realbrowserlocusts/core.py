@@ -25,6 +25,7 @@ def wrap_for_locust(request_type, name, func, *args, **kwargs):
             request_type=request_type,
             name=name,
             response_time=total_time,
+            response_length=0,
             exception=event_exception
         )
         raise StopLocust()
